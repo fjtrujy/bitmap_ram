@@ -1,0 +1,68 @@
+<html>
+  <div id="progress"></div>
+  <div id="result"></div>
+  <script>
+    const progress = document.getElementById("progress");
+    const result = document.getElementById("result");
+    const formatBytes = (bytes) => {
+      if(bytes == 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    const tick = () => {
+      return new Promise((r) => {
+        setTimeout(r, 0)
+      })
+    }
+    const createRandomBitmap = (width, height) => {
+      const arr = new Uint8ClampedArray(width * height * 4);
+
+      // Fill the array with the same RGBA values
+      for (let i = 0; i < arr.length; i += 4) {
+        arr[i + 0] = Math.floor(Math.random() * 255); // R value
+        arr[i + 1] = Math.floor(Math.random() * 255); // G value
+        arr[i + 2] = Math.floor(Math.random() * 255); // B value
+        arr[i + 3] = Math.floor(Math.random() * 255); // A value
+      }
+      return createImageBitmap(new ImageData(arr, width, height));
+      // return arr;
+    }
+
+    const printResults = () => {
+      const memorySample = window.performance && window.performance.memory;
+      result.innerText = `
+        usedJSHeapSize=${formatBytes(memorySample.usedJSHeapSize)} 
+        totalJSHeapSize=${formatBytes(memorySample.totalJSHeapSize)} 
+        jsHeapSizeLimit=${formatBytes(memorySample.jsHeapSizeLimit)}
+      `;
+    }
+
+    const reachedLimit = () => {
+      const memorySample = window.performance && window.performance.memory;
+      return memorySample.usedJSHeapSize >= memorySample.jsHeapSizeLimit * 90 / 100;
+    }
+
+    const printGerating = (current) => {
+      progress.innerText = `Generating ${current}...`;
+    }
+
+    const printDone = (total) => {
+      progress.innerText = `Generated ${total} using 90% of RAM`;
+    }
+
+    const main = async () => {
+      var listBitmap = []
+      while (!reachedLimit()) {
+        printGerating(listBitmap.length + 1, '∞')
+        await tick()
+        listBitmap.push(await createRandomBitmap(1024, 1024))
+        printResults()
+        await tick()
+      }
+      printDone(listBitmap.length)
+    }
+    main()
+  </script>
+</html>

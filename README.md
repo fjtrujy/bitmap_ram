@@ -1,2 +1,4 @@
-# bitmap_ram
-Dummy web app to check what is the maximum RAM used when creating bitmap with a specific size
+# bitmap-ram
+Dummy web app to check what is used RAM in your device when allocating bitmap
+
+Just visit the next link and enjoy it 👏🏽: [BITMAP RAM](https://fjtrujy.github.io/bitmap-ram/)
