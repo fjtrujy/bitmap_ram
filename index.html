@@ -32,6 +32,10 @@
 
     const printResults = () => {
       const memorySample = window.performance && window.performance.memory;
+      if (!memorySample) {
+        result.innerText = 'Memory API not supported';
+        return;
+      }
       result.innerText = `
         usedJSHeapSize=${formatBytes(memorySample.usedJSHeapSize)} 
         totalJSHeapSize=${formatBytes(memorySample.totalJSHeapSize)} 
@@ -41,6 +45,9 @@
 
     const reachedLimit = () => {
       const memorySample = window.performance && window.performance.memory;
+      if (!memorySample) {
+        return false;
+      }
       return memorySample.usedJSHeapSize >= memorySample.jsHeapSizeLimit * 90 / 100;
     }
 
